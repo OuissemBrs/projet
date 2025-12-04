@@ -1,0 +1,62 @@
+name: Pipeline CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Prendre le code
+      - name: Télécharger le code
+        uses: actions/checkout@v4
+
+      # Étape 2 : Installer Java
+      - name: Installer Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Étape 3 : Afficher les informations
+      - name: Afficher les infos
+        run: |
+          echo "=== INFORMATIONS ==="
+          echo "Utilisateur : ${{ github.actor }}"
+          echo "Branche : ${{ github.ref }}"
+          echo "Java version :"
+          java --version
+          echo ""
+          echo "Maven version :"
+          mvn --version
+
+      # Étape 4 : Compiler le projet
+      - name: Compiler
+        run: mvn clean compile
+
+      # Étape 5 : Exécuter les tests
+      - name: Tests unitaires
+        run: mvn test
+
+      # Étape 6 : Résultats
+      - name: Afficher résultats
+        if: always()
+        run: |
+          echo "=== RÉSULTATS ==="
+          if [ -f target/surefire-reports/com.exemple.CalculatorTest.txt ]; then
+            echo "Rapport de tests :"
+            cat target/surefire-reports/com.exemple.CalculatorTest.txt
+          else
+            echo "Aucun rapport trouvé"
+          fi
+
+      # Étape 7 : Notifier en cas d'échec
+      - name: Notifier échec
+        if: failure()
+        run: |
+          echo "❌ TESTS ÉCHOUÉS"
+          echo "Veuillez corriger les erreurs."

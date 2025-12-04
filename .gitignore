@@ -1,0 +1,26 @@
+# Fichiers Java compilés
+*.class
+*.jar
+*.war
+*.ear
+# Dossiers de build
+target/
+build/
+out/
+bin/
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+# IDE
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.project
+.classpath
+# Système
+.DS_Store
+Thumbs.db
